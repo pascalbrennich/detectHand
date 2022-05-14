@@ -10,6 +10,7 @@ function App() {
   const [model, setModel] = useState(null)
   const [active, setActive] = useState(false)
   const [points, setPoints] = useState([])
+  const [middleFinger, setMiddleFinger] = useState(false)
 
   useEffect(() => {
     const load = async () => {
@@ -45,14 +46,14 @@ function App() {
     if (video && model && active) video.requestVideoFrameCallback(onFrame)
 
     if (!model && active) load()
-    console.log('render')
   }, [model, active])
-  console.log(points)
+
   return (
     <div className="App">
       <Webcam />
       <button onClick={() => setActive(!active)}>{active ? 'Deaktivieren' : 'Aktivieren'}</button>
-      <HandShape points={points} />
+      <div>{middleFinger ? 'Du zeigst mir den MittelFinger!!!!!' : 'Brav!'}</div>
+      <HandShape points={points} setMiddleFinger={setMiddleFinger} />
     </div>
   )
 }

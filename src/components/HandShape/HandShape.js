@@ -1,15 +1,15 @@
 import { StyledPoint, Window } from './HandShape.Styled'
 
-const HandShape = ({ points }) => {
+const HandShape = ({ points, setMiddleFinger }) => {
   if (points.length > 12) {
     const heightOf11 = points[11][1]
-    const isMiddleFinger = points.reduce((acc, el, i) => {
+    const isMiddleFinger = !points.reduce((acc, el, i) => {
       if (i !== 12 && i !== 11 && !acc) {
         return el[1] < heightOf11
       }
       return acc
     }, false)
-    console.log(isMiddleFinger)
+    setMiddleFinger(isMiddleFinger)
   }
 
   return (
