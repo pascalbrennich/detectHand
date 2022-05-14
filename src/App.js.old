@@ -1,0 +1,47 @@
+import './App.css'
+import { useEffect, useState } from 'react'
+import * as tf from '@tensorflow/tfjs'
+import * as handpose from '@tensorflow-models/handpose'
+import '@tensorflow/tfjs-backend-webgl'
+
+function App() {
+  // const linearModel = tf.Sequential
+  const [linearModel, setLinearModel] = useState(null)
+  const [prediction, setPrediction] = useState()
+  const [inputValue, setInputValue] = useState(0)
+
+  useEffect(() => {
+    const trainModel = async () => {
+      const linearModel = tf.sequential()
+
+      linearModel.add(tf.layers.dense({ units: 1, inputShape: [1] }))
+
+      linearModel.compile({ loss: 'meanSquaredError', optimizer: 'sgd' })
+
+      const xs = tf.tensor1d([1.9, 1.8, 1.7, 1.6, 1.5, 1.4])
+      const ys = tf.tensor1d([90, 80, 70, 60, 50, 40])
+      await linearModel.fit(xs, ys)
+
+      console.log('model trained!')
+
+      setLinearModel(linearModel)
+    }
+
+    if (!linearModel) trainModel()
+  }, [linearModel])
+
+  const linearPrediction = () => {
+    const output = linearModel.predict(tf.tensor2d([Number.parseInt(inputValue)], [1, 1]))
+    setPrediction(Array.from(output.dataSync())[0])
+  }
+
+  return (
+    <div className="App">
+      <input type="number" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+      <button onClick={linearPrediction}>Predict</button>
+      {prediction}
+    </div>
+  )
+}
+
+export default App
